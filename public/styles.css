@@ -5,45 +5,30 @@
   --muted: #56666E;
   --line: #C9D3D7;
   --field: #F6F8F9;
-  --mg: #2B6E8C;
-  --mg-soft: #E1EEF4;
-  --hco3: #9A6A14;
-  --hco3-soft: #F6EEDC;
+  --hardness: #2B6E8C;
+  --hardness-soft: #E1EEF4;
+  --buffer: #9A6A14;
+  --buffer-soft: #F6EEDC;
   --warn: #9C3B1E;
   --focus: #2B6E8C;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root {
     --bg: #0F1A20;
     --surface: #16252D;
     --ink: #E3ECEF;
     --muted: #93A6AE;
     --line: #2C3D46;
     --field: #0F1C22;
-    --mg: #74B6D4;
-    --mg-soft: #17323F;
-    --hco3: #E2B15A;
-    --hco3-soft: #33291A;
+    --hardness: #74B6D4;
+    --hardness-soft: #17323F;
+    --buffer: #E2B15A;
+    --buffer-soft: #33291A;
     --warn: #F08B6B;
     --focus: #74B6D4;
     color-scheme: dark;
   }
-}
-:root[data-theme="dark"] {
-  --bg: #0F1A20;
-  --surface: #16252D;
-  --ink: #E3ECEF;
-  --muted: #93A6AE;
-  --line: #2C3D46;
-  --field: #0F1C22;
-  --mg: #74B6D4;
-  --mg-soft: #17323F;
-  --hco3: #E2B15A;
-  --hco3-soft: #33291A;
-  --warn: #F08B6B;
-  --focus: #74B6D4;
-  color-scheme: dark;
 }
 :root {
   box-sizing: border-box;
@@ -123,8 +108,8 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   gap: 1rem;
   margin-bottom: 1.75rem;
 }
-.targets .field.mg .field-label::before,
-.targets .field.hco3 .field-label::before {
+.targets .field.hardness .field-label::before,
+.targets .field.buffer .field-label::before {
   content: "";
   display: inline-block;
   width: 0.6rem; height: 0.6rem;
@@ -132,11 +117,14 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   margin-right: 0.4rem;
   vertical-align: 0.05em;
 }
-.targets .field.mg .field-label::before { background: var(--mg); }
-.targets .field.hco3 .field-label::before { background: var(--hco3); }
+.targets .field.hardness .field-label::before { background: var(--hardness); }
+.targets .field.buffer .field-label::before { background: var(--buffer); }
 
 /* Scale sequence: the core of the page */
 .scale {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -160,8 +148,8 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   font-size: 0.9375rem;
   color: var(--muted);
 }
-.step.mg .step-n { border-color: var(--mg); color: var(--mg); background: var(--mg-soft); }
-.step.hco3 .step-n { border-color: var(--hco3); color: var(--hco3); background: var(--hco3-soft); }
+.step.hardness .step-n { border-color: var(--hardness); color: var(--hardness); background: var(--hardness-soft); }
+.step.buffer .step-n { border-color: var(--buffer); color: var(--buffer); background: var(--buffer-soft); }
 .step-what { font-weight: 500; }
 .step-what small { display: block; color: var(--muted); font-size: 0.875rem; font-weight: 400; }
 .readout { text-align: right; white-space: nowrap; }
@@ -174,15 +162,8 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .readout .reading .g { font-size: 1rem; font-weight: 500; color: var(--muted); margin-left: 0.15rem; }
 .readout .sub { display: block; font-size: 0.8125rem; color: var(--muted); }
-.step.mg .reading { color: var(--mg); }
-.step.hco3 .reading { color: var(--hco3); }
-.scale-foot {
-  padding: 0.75rem 1.25rem;
-  background: var(--field);
-  border-top: 1px solid var(--line);
-  font-size: 0.875rem;
-  color: var(--muted);
-}
+.step.hardness .reading { color: var(--hardness); }
+.step.buffer .reading { color: var(--buffer); }
 
 /* Concentrates */
 .bottles {
@@ -193,11 +174,11 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .bottle {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-top: 4px solid var(--mg);
+  border-top: 4px solid var(--hardness);
   border-radius: 10px;
   padding: 1.25rem;
 }
-.bottle.hco3 { border-top-color: var(--hco3); }
+.bottle.buffer { border-top-color: var(--buffer); }
 .bottle-head { margin-bottom: 1rem; }
 .bottle-head p { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.9375rem; }
 .bottle-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
@@ -213,8 +194,8 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 }
 .mini li span:first-child { color: var(--muted); }
 .mini li strong { font-weight: 600; font-size: 1.0625rem; white-space: nowrap; }
-.bottle.mg .mini li.key strong { color: var(--mg); }
-.bottle.hco3 .mini li.key strong { color: var(--hco3); }
+.bottle.hardness .mini li.key strong { color: var(--hardness); }
+.bottle.buffer .mini li.key strong { color: var(--buffer); }
 .lasts { margin: 0.75rem 0 0; font-size: 0.9375rem; color: var(--muted); }
 
 .warn {
