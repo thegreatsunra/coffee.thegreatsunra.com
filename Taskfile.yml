@@ -8,3 +8,12 @@ tasks:
         msg: "npm is not installed. Install Node.js from https://nodejs.org"
     cmds:
       - npx serve public
+
+  test:
+    desc: Run the JS tests in a Node container
+    preconditions:
+      - sh: docker info
+        msg: "Docker is not running. Start Docker and try again."
+    cmds:
+      # The anonymous volume keeps the container's node_modules out of the repo
+      - docker run --rm -v "$PWD":/app -v /app/node_modules -w /app node:24-alpine sh -c "npm ci --silent && npm test"
