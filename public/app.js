@@ -15,7 +15,7 @@ function show(id, text) {
 }
 
 function format(n, decimals = 2) {
-  if (n === null || !Number.isFinite(n)) return "–";
+  if (!Number.isFinite(n)) return "–";
   return n.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 }
 
@@ -46,8 +46,12 @@ function update() {
   const { hardnessTarget, bufferTarget, batchFlOz, hardnessStrength, hardnessBottle, bufferStrength, bufferBottle } = readInputs();
 
   const batch = batchFlOz === null ? null : batchWeight(batchFlOz);
-  const hardnessDose = batch !== null && hardnessTarget !== null && hardnessStrength !== null ? dose(batch, hardnessTarget, hardnessStrength) : null;
-  const bufferDose = batch !== null && bufferTarget !== null && bufferStrength !== null ? dose(batch, bufferTarget, bufferStrength) : null;
+  const hardnessDose = batch !== null && hardnessTarget !== null && hardnessStrength !== null
+    ? dose(batch, hardnessTarget, hardnessStrength)
+    : null;
+  const bufferDose = batch !== null && bufferTarget !== null && bufferStrength !== null
+    ? dose(batch, bufferTarget, bufferStrength)
+    : null;
   const ready = hardnessDose !== null && bufferDose !== null;
 
   show("hardnessDose", format(hardnessDose));
@@ -62,10 +66,15 @@ function update() {
   else if (hardnessDose + bufferDose > batch) batchWarning = "The concentrates add up to more than the whole batch. Raise the concentrate strengths or lower the targets.";
   show("batchWarn", batchWarning);
 
-  const hardnessSalt = hardnessStrength !== null && hardnessBottle !== null ? concentrateSalt(hardnessStrength, hardnessBottle, EPSOM_PER_PPM) : null;
-  const bufferSalt = bufferStrength !== null && bufferBottle !== null ? concentrateSalt(bufferStrength, bufferBottle, BAKING_SODA_PER_PPM) : null;
+  const hardnessSalt = hardnessStrength !== null && hardnessBottle !== null
+    ? concentrateSalt(hardnessStrength, hardnessBottle, EPSOM_PER_PPM)
+    : null;
+  const bufferSalt = bufferStrength !== null && bufferBottle !== null
+    ? concentrateSalt(bufferStrength, bufferBottle, BAKING_SODA_PER_PPM)
+    : null;
+  const bufferWarning = bufferSalt !== null && mayNotDissolve(bufferSalt, bufferBottle) ? MAY_NOT_DISSOLVE : "";
   showBottle("hardness", hardnessSalt, hardnessBottle, hardnessDose, "");
-  showBottle("buffer", bufferSalt, bufferBottle, bufferDose, bufferSalt !== null && mayNotDissolve(bufferSalt, bufferBottle) ? MAY_NOT_DISSOLVE : "");
+  showBottle("buffer", bufferSalt, bufferBottle, bufferDose, bufferWarning);
 
   save();
 }

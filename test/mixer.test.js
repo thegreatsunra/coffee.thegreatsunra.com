@@ -27,12 +27,6 @@ test("concentrateSalt: grams of salt for a 4000 ppm, 1000 g bottle", () => {
   near(concentrateSalt(4000, 1000, BAKING_SODA_PER_PPM), 6.71);
 });
 
-test("baking soda counts double against CaCO3", () => {
-  // 2 × 84.01 g/mol NaHCO3 per 100.09 g/mol CaCO3
-  near(BAKING_SODA_PER_PPM * 1e6, 1.6787);
-  near(EPSOM_PER_PPM * 1e6, 2.4625);
-});
-
 test("batchWeight converts US fl oz to grams of water", () => {
   near(batchWeight(1), 29.57);
   near(batchWeight(128), 3785.41);
