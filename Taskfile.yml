@@ -1,0 +1,10 @@
+version: "3"
+
+tasks:
+  serve:
+    desc: Preview the site locally at http://localhost:3000
+    preconditions:
+      - sh: command -v npm
+        msg: "npm is not installed. Install Node.js from https://nodejs.org"
+    cmds:
+      - npx serve public
