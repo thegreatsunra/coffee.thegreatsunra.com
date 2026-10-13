@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Coffee Water Mixer</title>
+<title>Coffee Water Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,57 +12,13 @@
 <body>
 <main>
   <header>
-    <h1>Coffee Water Mixer</h1>
-    <p>Mix distilled or RO water into brewing water using two mineral concentrates: Epsom salt for hardness and baking soda for buffer. Every value is weighed in grams on a tared scale.</p>
+    <h1>Coffee Water Calculator</h1>
+    <p>Turn reverse osmosis water into coffee water via two mineral concentrates: Epsom salt for hardness and baking soda for buffer.</p>
   </header>
 
-  <section aria-labelledby="mixBatchHeading">
-    <h2 id="mixBatchHeading">Mix a batch</h2>
-    <p class="lede">Set the water you want and the batch size. The steps show what the scale should read after each addition.</p>
-
-    <div class="targets">
-      <label class="field hardness">
-        <span class="field-label">Hardness target</span>
-        <span class="input-wrap"><input id="hardnessTarget" type="number" inputmode="decimal" step="any" min="0"><span class="unit">ppm as CaCO3</span></span>
-      </label>
-      <label class="field buffer">
-        <span class="field-label">Alkalinity target</span>
-        <span class="input-wrap"><input id="bufferTarget" type="number" inputmode="decimal" step="any" min="0"><span class="unit">ppm as CaCO3</span></span>
-      </label>
-      <label class="field">
-        <span class="field-label">Batch size</span>
-        <span class="input-wrap"><input id="batchFlOz" type="number" inputmode="decimal" step="any" min="0"><span class="unit">US fl oz</span></span>
-      </label>
-    </div>
-
-    <ol class="scale">
-      <li class="step">
-        <span class="step-n">1</span>
-        <span class="step-what">Place the empty jug on the scale and tare it</span>
-        <span class="readout"><span class="reading">0.00<span class="g">g</span></span></span>
-      </li>
-      <li class="step hardness">
-        <span class="step-n">2</span>
-        <span class="step-what">Add hardness concentrate<small>Epsom salt concentrate</small></span>
-        <span class="readout"><span class="reading"><span id="readingAfterHardness">–</span><span class="g">g</span></span><span class="sub">adds <span id="hardnessDose">–</span> g</span></span>
-      </li>
-      <li class="step buffer">
-        <span class="step-n">3</span>
-        <span class="step-what">Add buffer concentrate<small>Baking soda concentrate</small></span>
-        <span class="readout"><span class="reading"><span id="readingAfterBuffer">–</span><span class="g">g</span></span><span class="sub">adds <span id="bufferDose">–</span> g</span></span>
-      </li>
-      <li class="step">
-        <span class="step-n">4</span>
-        <span class="step-what">Top up with distilled water, then cap and shake</span>
-        <span class="readout"><span class="reading"><span id="readingFinal">–</span><span class="g">g</span></span><span class="sub">adds <span id="topUp">–</span> g</span></span>
-      </li>
-    </ol>
-    <p class="warn" id="batchWarn" role="status"></p>
-  </section>
-
-  <section aria-labelledby="concentratesHeading">
+    <section aria-labelledby="concentratesHeading">
     <h2 id="concentratesHeading">Make the concentrates</h2>
-    <p class="lede">Make each concentrate in its own bottle with distilled or RO water. Both should be the same strength so the batch doses keep the same ratio as your targets.</p>
+    <p class="lede">Make each concentrate in its own bottle with <strong>reverse osmosis water.</strong></p>
 
     <div class="bottles">
       <article class="bottle hardness" aria-labelledby="hardnessHeading">
@@ -73,7 +29,7 @@
         <div class="bottle-fields">
           <label class="field">
             <span class="field-label">Strength</span>
-            <span class="input-wrap"><input id="hardnessStrength" type="number" inputmode="decimal" step="any" min="0"><span class="unit">ppm as CaCO3</span></span>
+            <span class="input-wrap"><input id="hardnessStrength" type="number" inputmode="decimal" step="any" min="0"><span class="unit">ppm</span></span>
           </label>
           <label class="field">
             <span class="field-label">Bottle total</span>
@@ -81,9 +37,9 @@
           </label>
         </div>
         <ul class="mini">
-          <li class="key"><span>Tare the bottle, add Epsom salt</span><strong><span id="hardnessSalt">–</span> g</strong></li>
-          <li><span>Add distilled water until the scale reads</span><strong><span id="hardnessFill">–</span> g</strong></li>
-          <li><span>Distilled water added</span><strong><span id="hardnessWater">–</span> g</strong></li>
+          <li class="key"><span>Epsom salt</span><strong><span id="hardnessSalt">–</span> g</strong></li>
+          <li><span>Water</span><strong><span id="hardnessWater">–</span> g</strong></li>
+          <li><span>Total</span><strong><span id="hardnessFill">–</span> g</strong></li>
         </ul>
         <p class="lasts" id="hardnessLasts"></p>
         <p class="warn" id="hardnessWarn" role="status"></p>
@@ -97,7 +53,7 @@
         <div class="bottle-fields">
           <label class="field">
             <span class="field-label">Strength</span>
-            <span class="input-wrap"><input id="bufferStrength" type="number" inputmode="decimal" step="any" min="0"><span class="unit">ppm as CaCO3</span></span>
+            <span class="input-wrap"><input id="bufferStrength" type="number" inputmode="decimal" step="any" min="0"><span class="unit">ppm</span></span>
           </label>
           <label class="field">
             <span class="field-label">Bottle total</span>
@@ -105,14 +61,64 @@
           </label>
         </div>
         <ul class="mini">
-          <li class="key"><span>Tare the bottle, add baking soda</span><strong><span id="bufferSalt">–</span> g</strong></li>
-          <li><span>Add distilled water until the scale reads</span><strong><span id="bufferFill">–</span> g</strong></li>
-          <li><span>Distilled water added</span><strong><span id="bufferWater">–</span> g</strong></li>
+          <li class="key"><span>Baking soda</span><strong><span id="bufferSalt">–</span> g</strong></li>
+          <li><span>Water</span><strong><span id="bufferWater">–</span> g</strong></li>
+          <li><span>Total</span><strong><span id="bufferFill">–</span> g</strong></li>
+
         </ul>
         <p class="lasts" id="bufferLasts"></p>
         <p class="warn" id="bufferWarn" role="status"></p>
       </article>
     </div>
+  </section>
+
+  <section aria-labelledby="mixBatchHeading">
+    <h2 id="mixBatchHeading">Mix a batch</h2>
+    <p class="lede">Set your targets and the batch size. The steps show what the scale should read after each addition.</p>
+
+    <div class="targets">
+      <label class="field hardness">
+        <span class="field-label">Hardness target</span>
+        <span class="input-wrap"><input id="hardnessTarget" type="number" inputmode="decimal" step="any" min="0"><span class="unit">ppm</span></span>
+      </label>
+      <label class="field buffer">
+        <span class="field-label">Alkalinity target</span>
+        <span class="input-wrap"><input id="bufferTarget" type="number" inputmode="decimal" step="any" min="0"><span class="unit">ppm</span></span>
+      </label>
+      <label class="field">
+        <span class="field-label">Batch size</span>
+        <span class="input-wrap"><input id="batchFlOz" type="number" inputmode="decimal" step="any" min="0"><span class="unit">US fl oz</span></span>
+      </label>
+    </div>
+
+    <ol class="scale">
+      <li class="step">
+        <span class="step-n">1</span>
+        <span class="step-what">Starting measurement</span>
+        <span class="readout"><span class="reading">0.00<span class="g">g</span></span></span>
+      </li>
+      <li class="step hardness">
+        <span class="step-n">2</span>
+        <span class="step-what">Hardness<small>Epsom salt concentrate</small></span>
+        <span class="readout"><span class="reading"><span id="hardnessDose">–</span><span class="g">g</span></span><span class="sub"><span id="readingAfterHardness">–</span> g total</span></span>
+      </li>
+      <li class="step buffer">
+        <span class="step-n">3</span>
+        <span class="step-what">Buffer<small>Baking soda concentrate</small></span>
+        <span class="readout"><span class="reading"><span id="bufferDose">–</span><span class="g">g</span></span><span class="sub"><span id="readingAfterBuffer">–</span> g total</span></span>
+      </li>
+      <li class="step">
+        <span class="step-n">4</span>
+        <span class="step-what">Water</span>
+        <span class="readout"><span class="reading"><span id="topUp">–</span><span class="g">g</span></span></span>
+      </li>
+      <li class="step">
+        <span class="step-n">5</span>
+        <span class="step-what">Final measurement</span>
+        <span class="readout"><span class="reading"><span id="readingFinal">–</span><span class="g">g</span></span></span>
+      </li>
+    </ol>
+    <p class="warn" id="batchWarn" role="status"></p>
 
     <div class="actions"><button type="button" id="reset">Reset to starting values</button></div>
   </section>
