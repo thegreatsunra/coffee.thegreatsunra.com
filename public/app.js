@@ -38,7 +38,7 @@ function showBottle(name, salt, bottleTotal, batchDose, warning) {
   show(`${name}Water`, format(salt === null ? null : bottleTotal - salt));
   show(`${name}Warn`, salt !== null && salt >= bottleTotal ? TOO_MUCH_SALT : warning);
   show(`${name}Lasts`, bottleTotal !== null && batchDose > 0
-    ? `One bottle covers ${format(bottleTotal / batchDose, 1)} batches at this target.`
+    ? `One bottle makes ${format(bottleTotal / batchDose, 1)} batches at this target.`
     : "");
 }
 
