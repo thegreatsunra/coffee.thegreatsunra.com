@@ -1,6 +1,6 @@
 import { EPSOM_PER_PPM, BAKING_SODA_PER_PPM, parseAmount, concentrateSalt, batchWeight, dose, mayNotDissolve } from "./mixer.js";
 
-const DEFAULTS = { hardnessTarget: 68, bufferTarget: 20, batchFlOz: 128, hardnessStrength: 4000, hardnessBottle: 1000, bufferStrength: 4000, bufferBottle: 1000 };
+const DEFAULTS = { hardnessTarget: 68, bufferTarget: 30, batchFlOz: 128, hardnessStrength: 4000, hardnessBottle: 1000, bufferStrength: 4000, bufferBottle: 1000 };
 const MAY_BE_ZERO = ["hardnessTarget", "bufferTarget"];
 const STORAGE_KEY = "coffee-water-mixer:v1";
 
