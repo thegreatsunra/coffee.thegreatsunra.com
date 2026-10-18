@@ -14,25 +14,25 @@ export const BAKING_SODA_PER_PPM = 2 * BAKING_SODA / CACO3 / 1e6; // two bicarbo
 const BAKING_SODA_COLD_LIMIT = 0.069;
 
 // An input's text as a number, or null if it is empty, not a number, or negative.
-export function parseAmount(raw) {
+export function parseAmount(raw: string): number | null {
   const text = raw.trim();
   const n = Number(text);
   if (text === "" || !Number.isFinite(n) || n < 0) return null;
   return n === 0 ? 0 : n; // -0 would display as "-0.00"
 }
 
-export function concentrateSalt(strengthPpm, bottleGrams, saltPerPpm) {
+export function concentrateSalt(strengthPpm: number, bottleGrams: number, saltPerPpm: number): number {
   return strengthPpm * bottleGrams * saltPerPpm;
 }
 
-export function batchWeight(flOz) {
+export function batchWeight(flOz: number): number {
   return flOz * ML_PER_FL_OZ * WATER_DENSITY;
 }
 
-export function dose(batchGrams, targetPpm, strengthPpm) {
+export function dose(batchGrams: number, targetPpm: number, strengthPpm: number): number {
   return batchGrams * targetPpm / strengthPpm;
 }
 
-export function mayNotDissolve(saltGrams, bottleGrams) {
+export function mayNotDissolve(saltGrams: number, bottleGrams: number): boolean {
   return saltGrams / (bottleGrams - saltGrams) > BAKING_SODA_COLD_LIMIT;
 }

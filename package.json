@@ -2,6 +2,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test"
+    "test": "tsc -p test && node --test",
+    "build": "rm -rf public && tsc && cp src/index.html public/ && sass --no-source-map --quiet-deps --load-path=node_modules src/styles.scss public/styles.css"
+  },
+  "devDependencies": {
+    "@picocss/pico": "^2.1.1",
+    "@types/node": "^24.19.2",
+    "sass": "^1.105.2",
+    "typescript": "^7.0.2"
   }
 }

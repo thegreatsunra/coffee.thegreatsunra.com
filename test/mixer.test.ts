@@ -3,10 +3,10 @@ import assert from "node:assert/strict";
 import {
   EPSOM_PER_PPM, BAKING_SODA_PER_PPM,
   parseAmount, concentrateSalt, batchWeight, dose, mayNotDissolve,
-} from "../public/mixer.js";
+} from "../src/mixer.ts";
 
 // The page shows 2 decimals, so that is the precision that matters.
-const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 0.005, `${actual} is not ~${expected}`);
+const near = (actual: number, expected: number) => assert.ok(Math.abs(actual - expected) < 0.005, `${actual} is not ~${expected}`);
 
 test("parseAmount accepts zero and positive numbers", () => {
   assert.equal(parseAmount("68"), 68);

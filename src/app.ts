@@ -1,43 +1,46 @@
-import { EPSOM_PER_PPM, BAKING_SODA_PER_PPM, parseAmount, concentrateSalt, batchWeight, dose, mayNotDissolve } from "./mixer.js";
+import { EPSOM_PER_PPM, BAKING_SODA_PER_PPM, parseAmount, concentrateSalt, batchWeight, dose, mayNotDissolve } from "./mixer.ts";
 
-const DEFAULTS = { hardnessTarget: 68, bufferTarget: 30, batchFlOz: 128, hardnessStrength: 4000, hardnessBottle: 1000, bufferStrength: 4000, bufferBottle: 1000 };
-const MAY_BE_ZERO = ["hardnessTarget", "bufferTarget"];
+const DEFAULTS = { hardnessTarget: "68", bufferTarget: "30", batchFlOz: "128", hardnessStrength: "4000", hardnessBottle: "1000", bufferStrength: "4000", bufferBottle: "1000" };
+type Field = keyof typeof DEFAULTS;
+const MAY_BE_ZERO: string[] = ["hardnessTarget", "bufferTarget"];
 const STORAGE_KEY = "coffee-water-mixer:v1";
 
 const TOO_MUCH_SALT = "The salt weighs more than the bottle total. Lower the strength or raise the bottle total.";
 const MAY_NOT_DISSOLVE = "At this strength the baking soda may not fully dissolve, or may crystallize in the fridge. Baking soda dissolves to about 69 g per 1000 g of cold water.";
 
-const $ = (id) => document.getElementById(id);
-const inputs = Object.keys(DEFAULTS).map($);
+// The markup is fixed, so every id app.ts asks for exists.
+const $ = (id: string) => document.getElementById(id)!;
+const inputs = Object.keys(DEFAULTS).map((id) => $(id) as HTMLInputElement);
 
-function show(id, text) {
+function show(id: string, text: string) {
   $(id).textContent = text;
 }
 
-function format(n, decimals = 2) {
-  if (!Number.isFinite(n)) return "–";
+function format(n: number | null, decimals = 2) {
+  if (n === null || !Number.isFinite(n)) return "–";
   return n.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 }
 
-// Each input's number, or null when it is invalid. Invalid fields get a red border.
+// Each input's number, or null when it is invalid. Pico draws aria-invalid fields with a red border.
 function readInputs() {
-  const values = {};
+  const values = {} as Record<Field, number | null>;
   for (const input of inputs) {
     let value = parseAmount(input.value);
     if (value === 0 && !MAY_BE_ZERO.includes(input.id)) value = null;
-    input.closest(".input-wrap").classList.toggle("invalid", value === null);
-    values[input.id] = value;
+    if (value === null) input.setAttribute("aria-invalid", "true");
+    else input.removeAttribute("aria-invalid");
+    values[input.id as Field] = value;
   }
   return values;
 }
 
 // One concentrate bottle: how to make it, any warning, and how many batches it lasts.
-function showBottle(name, salt, bottleTotal, batchDose, warning) {
+function showBottle(name: string, salt: number | null, bottleTotal: number | null, batchDose: number | null, warning: string) {
   show(`${name}Salt`, format(salt));
   show(`${name}Fill`, format(bottleTotal));
-  show(`${name}Water`, format(salt === null ? null : bottleTotal - salt));
-  show(`${name}Warn`, salt !== null && salt >= bottleTotal ? TOO_MUCH_SALT : warning);
-  show(`${name}Lasts`, bottleTotal !== null && batchDose > 0
+  show(`${name}Water`, format(salt === null || bottleTotal === null ? null : bottleTotal - salt));
+  show(`${name}Warn`, salt !== null && bottleTotal !== null && salt >= bottleTotal ? TOO_MUCH_SALT : warning);
+  show(`${name}Lasts`, bottleTotal !== null && batchDose !== null && batchDose > 0
     ? `One bottle makes ${format(bottleTotal / batchDose, 1)} batches at this target.`
     : "");
 }
@@ -52,7 +55,7 @@ function update() {
   const bufferDose = batch !== null && bufferTarget !== null && bufferStrength !== null
     ? dose(batch, bufferTarget, bufferStrength)
     : null;
-  const ready = hardnessDose !== null && bufferDose !== null;
+  const ready = batch !== null && hardnessDose !== null && bufferDose !== null;
 
   show("hardnessDose", format(hardnessDose));
   show("bufferDose", format(bufferDose));
@@ -72,7 +75,7 @@ function update() {
   const bufferSalt = bufferStrength !== null && bufferBottle !== null
     ? concentrateSalt(bufferStrength, bufferBottle, BAKING_SODA_PER_PPM)
     : null;
-  const bufferWarning = bufferSalt !== null && mayNotDissolve(bufferSalt, bufferBottle) ? MAY_NOT_DISSOLVE : "";
+  const bufferWarning = bufferSalt !== null && bufferBottle !== null && mayNotDissolve(bufferSalt, bufferBottle) ? MAY_NOT_DISSOLVE : "";
   showBottle("hardness", hardnessSalt, hardnessBottle, hardnessDose, "");
   showBottle("buffer", bufferSalt, bufferBottle, bufferDose, bufferWarning);
 
@@ -86,17 +89,18 @@ function save() {
 }
 
 function load() {
-  let saved = null;
-  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch {}
+  let saved: Record<string, unknown> | null = null;
+  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null"); } catch {}
   for (const input of inputs) {
-    input.value = typeof saved?.[input.id] === "string" ? saved[input.id] : DEFAULTS[input.id];
+    const value = saved?.[input.id];
+    input.value = typeof value === "string" ? value : DEFAULTS[input.id as Field];
   }
 }
 
 load();
 for (const input of inputs) input.addEventListener("input", update);
 $("reset").addEventListener("click", () => {
-  for (const input of inputs) input.value = DEFAULTS[input.id];
+  for (const input of inputs) input.value = DEFAULTS[input.id as Field];
   update();
 });
 update();

@@ -7,7 +7,7 @@ tasks:
       - sh: command -v npm
         msg: "npm is not installed. Install Node.js from https://nodejs.org"
     cmds:
-      - npx serve public
+      - npm run build && npx serve public
 
   test:
     desc: Run the JS tests in a Node container
@@ -15,4 +15,4 @@ tasks:
       - sh: docker info
         msg: "Docker is not running. Start Docker and try again."
     cmds:
-      - docker run --rm -v "$PWD":/app -w /app node:24-alpine npm test
+      - docker run --rm -v "$PWD":/app -v /app/node_modules -w /app node:24-alpine sh -c "npm ci && npm test"

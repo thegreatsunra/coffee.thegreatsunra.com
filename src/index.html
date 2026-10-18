@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coffee Water Calculator</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>Coffee Water Calculator</h1>
+  <p>Turn reverse osmosis water into coffee water via two mineral concentrates: Epsom salt for hardness and baking soda for buffer.</p>
+</header>
+
+<main>
+  <section aria-labelledby="concentratesHeading">
+    <h2 id="concentratesHeading">Make the concentrates</h2>
+    <p>Make each concentrate in its own bottle with <strong>reverse osmosis water.</strong></p>
+
+    <article aria-labelledby="hardnessHeading">
+      <header>
+        <h3 id="hardnessHeading">Hardness concentrate</h3>
+        <p>Epsom salt (magnesium sulfate heptahydrate)</p>
+      </header>
+      <label>Strength (ppm)
+        <input id="hardnessStrength" type="number" inputmode="decimal" step="any" min="0">
+      </label>
+      <label>Bottle total (g)
+        <input id="hardnessBottle" type="number" inputmode="decimal" step="any" min="0">
+      </label>
+      <table>
+        <tbody>
+          <tr><th scope="row">Epsom salt</th><td><strong><span id="hardnessSalt">–</span> g</strong></td></tr>
+          <tr><th scope="row">Water</th><td><span id="hardnessWater">–</span> g</td></tr>
+          <tr><th scope="row">Total</th><td><span id="hardnessFill">–</span> g</td></tr>
+        </tbody>
+      </table>
+      <p id="hardnessLasts"></p>
+      <p id="hardnessWarn" role="status"></p>
+    </article>
+
+    <article aria-labelledby="bufferHeading">
+      <header>
+        <h3 id="bufferHeading">Buffer concentrate</h3>
+        <p>Baking soda (sodium bicarbonate)</p>
+      </header>
+      <label>Strength (ppm)
+        <input id="bufferStrength" type="number" inputmode="decimal" step="any" min="0">
+      </label>
+      <label>Bottle total (g)
+        <input id="bufferBottle" type="number" inputmode="decimal" step="any" min="0">
+      </label>
+      <table>
+        <tbody>
+          <tr><th scope="row">Baking soda</th><td><strong><span id="bufferSalt">–</span> g</strong></td></tr>
+          <tr><th scope="row">Water</th><td><span id="bufferWater">–</span> g</td></tr>
+          <tr><th scope="row">Total</th><td><span id="bufferFill">–</span> g</td></tr>
+        </tbody>
+      </table>
+      <p id="bufferLasts"></p>
+      <p id="bufferWarn" role="status"></p>
+    </article>
+  </section>
+
+  <section aria-labelledby="mixBatchHeading">
+    <h2 id="mixBatchHeading">Mix a batch</h2>
+    <p>Set your targets and the batch size.</p>
+
+    <label>Hardness target (ppm)
+      <input id="hardnessTarget" type="number" inputmode="decimal" step="any" min="0">
+    </label>
+    <label>Alkalinity target (ppm)
+      <input id="bufferTarget" type="number" inputmode="decimal" step="any" min="0">
+    </label>
+    <label>Batch size (US fl oz)
+      <input id="batchFlOz" type="number" inputmode="decimal" step="any" min="0">
+    </label>
+
+    <table>
+      <thead><tr><th scope="col">Step</th><th scope="col">Add</th><th scope="col">Scale reads</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1. Starting measurement</th><td></td><td>0.00 g</td></tr>
+        <tr><th scope="row">2. Hardness (Epsom salt concentrate)</th><td><strong><span id="hardnessDose">–</span> g</strong></td><td><span id="readingAfterHardness">–</span> g</td></tr>
+        <tr><th scope="row">3. Buffer (baking soda concentrate)</th><td><strong><span id="bufferDose">–</span> g</strong></td><td><span id="readingAfterBuffer">–</span> g</td></tr>
+        <tr><th scope="row">4. Water</th><td><strong><span id="topUp">–</span> g</strong></td><td><span id="readingFinal">–</span> g</td></tr>
+      </tbody>
+    </table>
+    <p id="batchWarn" role="status"></p>
+
+    <button type="button" id="reset">Reset to starting values</button>
+  </section>
+
+  <section>
+    <details>
+      <summary>How the numbers are calculated</summary>
+      <p>Hardness and alkalinity are both expressed as ppm (parts per million) as CaCO3: the amount of calcium carbonate that would have the same effect. That puts both minerals on one scale, so targets and concentrate strengths can be compared directly.</p>
+      <p><strong>Salt for a concentrate</strong> = strength × bottle total ÷ 1,000,000 × (salt molar mass ÷ CaCO3 molar mass). Baking soda is multiplied by 2, because two bicarbonates equal one CaCO3.</p>
+      <p><strong>Batch weight</strong> = fluid ounces × 29.5735 mL per fl oz × 1 g/mL. Water at room temperature is about 0.998 g/mL, so this runs about 0.2% high.</p>
+      <p><strong>Concentrate to add</strong> = batch weight × target ÷ concentrate strength.</p>
+      <table>
+        <thead><tr><th scope="col">Constant</th><th scope="col">Value</th></tr></thead>
+        <tbody>
+          <tr><td>Epsom salt, MgSO4·7H2O</td><td>246.47 g/mol</td></tr>
+          <tr><td>Calcium carbonate, CaCO3</td><td>100.09 g/mol</td></tr>
+          <tr><td>Baking soda, NaHCO3</td><td>84.01 g/mol</td></tr>
+          <tr><td>Bicarbonates per CaCO3 equivalent</td><td>2</td></tr>
+          <tr><td>ppm per g/g</td><td>1,000,000</td></tr>
+          <tr><td>mL per US fl oz</td><td>29.5735295625</td></tr>
+          <tr><td>Water density</td><td>1 g/mL</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
