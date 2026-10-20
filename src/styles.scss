@@ -1,5 +1,10 @@
 @use "@picocss/pico/scss/pico.classless";
 
+// Reduce overall font size by 1px
+:root {
+  font-size: calc(var(--pico-font-size) * 0.9375);
+}
+
 // app.js fills these in. Collapse them while empty, but keep them rendered so role="status" still announces.
 p:empty {
 	margin: 0;
