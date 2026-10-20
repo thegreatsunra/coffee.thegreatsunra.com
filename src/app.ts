@@ -41,8 +41,10 @@ function showBottle(name: string, strength: number | null, salt: number | null, 
   show(`${name}Fill`, format(bottleTotal, 0));
   show(`${name}Water`, format(salt === null || bottleTotal === null ? null : bottleTotal - salt, 0));
   show(`${name}Warn`, salt !== null && bottleTotal !== null && salt >= bottleTotal ? TOO_MUCH_SALT : warning);
-  show(`${name}Lasts`, bottleTotal !== null && batchDose !== null && batchDose > 0
-    ? `One bottle makes ${format(bottleTotal / batchDose, 1)} batches at this target.`
+  // Round down: a partial batch isn't a batch.
+  const batches = bottleTotal !== null && batchDose !== null && batchDose > 0 ? Math.floor(bottleTotal / batchDose) : null;
+  show(`${name}Lasts`, batches !== null
+    ? `One bottle makes ${format(batches, 0)} ${batches === 1 ? "batch" : "batches"} at this target.`
     : "");
   const error = strength !== null && salt !== null && bottleTotal !== null
     ? scaleError(strength, [[salt, SMALL_SCALE], [bottleTotal, BIG_SCALE]])
