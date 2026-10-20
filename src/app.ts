@@ -35,7 +35,7 @@ function readInputs() {
 }
 
 // One concentrate bottle: how to make it, any warning, and how many batches it lasts.
-function showBottle(name: string, salt: number | null, bottleTotal: number | null, batchDose: number | null, warning: string) {
+function showBottle(name: string, strength: number | null, salt: number | null, bottleTotal: number | null, batchDose: number | null, warning: string) {
   show(`${name}Salt`, format(salt));
   // Water and total go on the 1 g scale, so whole grams; the salt goes on the 0.01 g scale.
   show(`${name}Fill`, format(bottleTotal, 0));
@@ -43,6 +43,12 @@ function showBottle(name: string, salt: number | null, bottleTotal: number | nul
   show(`${name}Warn`, salt !== null && bottleTotal !== null && salt >= bottleTotal ? TOO_MUCH_SALT : warning);
   show(`${name}Lasts`, bottleTotal !== null && batchDose !== null && batchDose > 0
     ? `One bottle makes ${format(bottleTotal / batchDose, 1)} batches at this target.`
+    : "");
+  const error = strength !== null && salt !== null && bottleTotal !== null
+    ? scaleError(strength, [[salt, SMALL_SCALE], [bottleTotal, BIG_SCALE]])
+    : null;
+  show(`${name}Error`, strength !== null && error !== null
+    ? `Worst-case scale error: ±${format(error)} ppm (±${format(error / strength * 100)}%).`
     : "");
 }
 
@@ -79,8 +85,8 @@ function update() {
     ? concentrateSalt(bufferStrength, bufferBottle, BAKING_SODA_PER_PPM)
     : null;
   const bufferWarning = bufferSalt !== null && bufferBottle !== null && mayNotDissolve(bufferSalt, bufferBottle) ? MAY_NOT_DISSOLVE : "";
-  showBottle("hardness", hardnessSalt, hardnessBottle, hardnessDose, "");
-  showBottle("buffer", bufferSalt, bufferBottle, bufferDose, bufferWarning);
+  showBottle("hardness", hardnessStrength, hardnessSalt, hardnessBottle, hardnessDose, "");
+  showBottle("buffer", bufferStrength, bufferSalt, bufferBottle, bufferDose, bufferWarning);
 
   let errorText = "";
   if (ready && hardnessTarget !== null && bufferTarget !== null && hardnessSalt !== null && hardnessBottle !== null && bufferSalt !== null && bufferBottle !== null) {

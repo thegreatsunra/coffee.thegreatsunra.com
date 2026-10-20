@@ -36,6 +36,7 @@
         </tbody>
       </table>
       <p id="hardnessLasts"></p>
+      <p id="hardnessError"></p>
       <p id="hardnessWarn" role="status"></p>
     </article>
 
@@ -58,6 +59,7 @@
         </tbody>
       </table>
       <p id="bufferLasts"></p>
+      <p id="bufferError"></p>
       <p id="bufferWarn" role="status"></p>
     </article>
   </section>
@@ -99,7 +101,8 @@
       <p><strong>Salt for a concentrate</strong> = strength × bottle total ÷ 1,000,000 × (salt molar mass ÷ CaCO3 molar mass). Baking soda is multiplied by 2, because two bicarbonates equal one CaCO3.</p>
       <p><strong>Batch weight</strong> = fluid ounces × 29.5735 mL per fl oz × 1 g/mL. Water at room temperature is about 0.998 g/mL, so this runs about 0.2% high.</p>
       <p><strong>Concentrate to add</strong> = batch weight × target ÷ concentrate strength.</p>
-      <p><strong>Worst-case scale error</strong> = target × (0.01 g ÷ salt + 1 g ÷ bottle total + 0.01 g ÷ dose + 1 g ÷ batch weight). It assumes every weighing is off by its scale's resolution in the same direction: 0.01 g for the salt and doses, 1 g for the bottle and jug.</p>
+      <p><strong>Worst-case scale error, concentrate</strong> = strength × (0.01 g ÷ salt + 1 g ÷ bottle total).</p>
+      <p><strong>Worst-case scale error, batch</strong> = target × (0.01 g ÷ salt + 1 g ÷ bottle total + 0.01 g ÷ dose + 1 g ÷ batch weight). It assumes every weighing is off by its scale's resolution in the same direction: 0.01 g for the salt and doses, 1 g for the bottle and jug.</p>
       <table>
         <thead><tr><th scope="col">Constant</th><th scope="col">Value</th></tr></thead>
         <tbody>
