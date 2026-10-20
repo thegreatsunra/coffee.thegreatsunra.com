@@ -2,12 +2,29 @@ version: "3"
 
 tasks:
   serve:
-    desc: Preview the site locally at http://localhost:3000
+    desc: Run the Vite dev server at http://localhost:5173, with live reload
     preconditions:
       - sh: command -v npm
         msg: "npm is not installed. Install Node.js from https://nodejs.org"
     cmds:
-      - npm run build && npx serve public
+      - npm run dev
+
+  build:
+    desc: Type-check and build the site into public/ with hashed asset filenames
+    preconditions:
+      - sh: command -v npm
+        msg: "npm is not installed. Install Node.js from https://nodejs.org"
+    cmds:
+      - npm run build
+
+  preview:
+    desc: Build, then serve public/ at http://localhost:4173 to check the production build
+    preconditions:
+      - sh: command -v npm
+        msg: "npm is not installed. Install Node.js from https://nodejs.org"
+    cmds:
+      - npm run build
+      - npm run preview
 
   test:
     desc: Run the JS tests in a Node container
