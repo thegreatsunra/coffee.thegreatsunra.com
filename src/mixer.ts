@@ -10,6 +10,10 @@ const WATER_DENSITY = 1; // g/mL; room-temperature water is ~0.998, so batches r
 export const EPSOM_PER_PPM = EPSOM_SALT / CACO3 / 1e6;
 export const BAKING_SODA_PER_PPM = 2 * BAKING_SODA / CACO3 / 1e6; // two bicarbonates equal one CaCO3
 
+// Scale resolutions, g: salt and doses go on the small scale, bottles and the jug on the big one.
+export const SMALL_SCALE = 0.01;
+export const BIG_SCALE = 1;
+
 // Baking soda dissolves to roughly 69 g per kg of water near 0 °C, about 96 g at 20 °C.
 const BAKING_SODA_COLD_LIMIT = 0.069;
 
@@ -35,4 +39,11 @@ export function dose(batchGrams: number, targetPpm: number, strengthPpm: number)
 
 export function mayNotDissolve(saltGrams: number, bottleGrams: number): boolean {
   return saltGrams / (bottleGrams - saltGrams) > BAKING_SODA_COLD_LIMIT;
+}
+
+// Worst-case ppm error when every weighing is off by its scale's resolution in the same direction.
+// Each weighing is [grams, resolution]; their relative errors add.
+export function scaleError(targetPpm: number, weighings: [number, number][]): number {
+  if (targetPpm === 0) return 0; // nothing is dosed, so there is nothing to get wrong
+  return targetPpm * weighings.reduce((sum, [grams, resolution]) => sum + resolution / grams, 0);
 }

@@ -1,4 +1,4 @@
-import { EPSOM_PER_PPM, BAKING_SODA_PER_PPM, parseAmount, concentrateSalt, batchWeight, dose, mayNotDissolve } from "./mixer.ts";
+import { EPSOM_PER_PPM, BAKING_SODA_PER_PPM, SMALL_SCALE, BIG_SCALE, parseAmount, concentrateSalt, batchWeight, dose, mayNotDissolve, scaleError } from "./mixer.ts";
 
 const DEFAULTS = { hardnessTarget: "68", bufferTarget: "30", batchFlOz: "128", hardnessStrength: "4000", hardnessBottle: "1000", bufferStrength: "4000", bufferBottle: "1000" };
 type Field = keyof typeof DEFAULTS;
@@ -37,8 +37,9 @@ function readInputs() {
 // One concentrate bottle: how to make it, any warning, and how many batches it lasts.
 function showBottle(name: string, salt: number | null, bottleTotal: number | null, batchDose: number | null, warning: string) {
   show(`${name}Salt`, format(salt));
-  show(`${name}Fill`, format(bottleTotal));
-  show(`${name}Water`, format(salt === null || bottleTotal === null ? null : bottleTotal - salt));
+  // Water and total go on the 1 g scale, so whole grams; the salt goes on the 0.01 g scale.
+  show(`${name}Fill`, format(bottleTotal, 0));
+  show(`${name}Water`, format(salt === null || bottleTotal === null ? null : bottleTotal - salt, 0));
   show(`${name}Warn`, salt !== null && bottleTotal !== null && salt >= bottleTotal ? TOO_MUCH_SALT : warning);
   show(`${name}Lasts`, bottleTotal !== null && batchDose !== null && batchDose > 0
     ? `One bottle makes ${format(bottleTotal / batchDose, 1)} batches at this target.`
@@ -59,10 +60,12 @@ function update() {
 
   show("hardnessDose", format(hardnessDose));
   show("bufferDose", format(bufferDose));
-  show("readingAfterHardness", format(hardnessDose));
-  show("readingAfterBuffer", format(ready ? hardnessDose + bufferDose : null));
-  show("readingFinal", format(batch));
-  show("topUp", format(ready ? batch - hardnessDose - bufferDose : null));
+  // Doses are weighed on the 0.01 g scale; the jug readings are on the 1 g scale, so whole grams.
+  // Top-up is the difference of the rounded readings, so the column adds up.
+  show("readingAfterHardness", format(hardnessDose, 0));
+  show("readingAfterBuffer", format(ready ? hardnessDose + bufferDose : null, 0));
+  show("readingFinal", format(batch, 0));
+  show("topUp", format(ready ? Math.round(batch) - Math.round(hardnessDose + bufferDose) : null, 0));
 
   let batchWarning = "";
   if (!ready) batchWarning = "Enter a batch size and concentrate strengths greater than zero, and targets of zero or more.";
@@ -78,6 +81,17 @@ function update() {
   const bufferWarning = bufferSalt !== null && bufferBottle !== null && mayNotDissolve(bufferSalt, bufferBottle) ? MAY_NOT_DISSOLVE : "";
   showBottle("hardness", hardnessSalt, hardnessBottle, hardnessDose, "");
   showBottle("buffer", bufferSalt, bufferBottle, bufferDose, bufferWarning);
+
+  let errorText = "";
+  if (ready && hardnessTarget !== null && bufferTarget !== null && hardnessSalt !== null && hardnessBottle !== null && bufferSalt !== null && bufferBottle !== null) {
+    const errorFor = (label: string, target: number, salt: number, bottle: number, batchDose: number) => {
+      const ppm = scaleError(target, [[salt, SMALL_SCALE], [bottle, BIG_SCALE], [batchDose, SMALL_SCALE], [batch, BIG_SCALE]]);
+      const percent = target === 0 ? 0 : ppm / target * 100;
+      return `${label} ±${format(ppm)} ppm (±${format(percent)}%)`;
+    };
+    errorText = `Worst-case scale error: ${errorFor("hardness", hardnessTarget, hardnessSalt, hardnessBottle, hardnessDose)}, ${errorFor("alkalinity", bufferTarget, bufferSalt, bufferBottle, bufferDose)}.`;
+  }
+  show("scaleError", errorText);
 
   save();
 }

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   EPSOM_PER_PPM, BAKING_SODA_PER_PPM,
-  parseAmount, concentrateSalt, batchWeight, dose, mayNotDissolve,
+  SMALL_SCALE, BIG_SCALE, parseAmount, concentrateSalt, batchWeight, dose, mayNotDissolve, scaleError,
 } from "../src/mixer.ts";
 
 // The page shows 2 decimals, so that is the precision that matters.
@@ -45,4 +45,9 @@ test("mayNotDissolve flags baking soda over ~69 g per kg of water", () => {
   assert.equal(mayNotDissolve(concentrateSalt(38000, 1000, BAKING_SODA_PER_PPM), 1000), false); // 68 g/kg
   assert.equal(mayNotDissolve(concentrateSalt(39000, 1000, BAKING_SODA_PER_PPM), 1000), true);  // 70 g/kg
   assert.equal(mayNotDissolve(6.71, 1000), false); // the default bottle
+});
+
+test("scaleError: worst-case ppm for the default hardness batch", () => {
+  near(scaleError(68, [[9.85, SMALL_SCALE], [1000, BIG_SCALE], [64.35, SMALL_SCALE], [3785.41, BIG_SCALE]]), 0.166);
+  assert.equal(scaleError(0, [[9.85, SMALL_SCALE], [0, SMALL_SCALE]]), 0);
 });
