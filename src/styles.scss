@@ -9,3 +9,6 @@
 p:empty {
 	margin: 0;
 }
+
+// Render number + " g" on the same line in tables
+th[scope="row"] ~ td { white-space: nowrap; }
